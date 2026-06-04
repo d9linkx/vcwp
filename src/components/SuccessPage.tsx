@@ -15,10 +15,16 @@ interface SuccessPageProps {
 
 export default function SuccessPage({ createdTicket, onBackToHome, onRegisterAnother }: SuccessPageProps) {
   const [copiedValue, setCopiedValue] = useState<'account' | 'ticket' | null>(null);
+  const [receiptSent, setReceiptSent] = useState(false);
 
   const isMasterclass = createdTicket.id.startsWith("VCM-") || !!createdTicket.details.projectIdea;
   const commitmentFee = isMasterclass ? "₦20,000" : "₦1,000";
   const courseName = isMasterclass ? "Premium 1-on-1 Masterclass" : "Beginner Intro Coding Class";
+
+  const handleWhatsAppReceipt = () => {
+    window.open(getWhatsAppRedirectionUrl(), '_blank');
+    setReceiptSent(true);
+  };
 
   const paymentAccountDetails = {
     bankName: "Kuda Microfinance Bank",
@@ -51,11 +57,9 @@ export default function SuccessPage({ createdTicket, onBackToHome, onRegisterAno
         {/* Visual Progress Stepper - Step 2 (Payment Step) */}
         <div className="bg-white border border-zinc-200 rounded-2xl shadow-sm p-5 space-y-4 print:hidden">
           <p className="text-center text-[10px] uppercase tracking-widest text-emerald-700 bg-emerald-50 px-3 py-1.5 rounded-full inline-block mx-auto mb-1 font-bold font-mono">
-            NEXT STEP: SEND PAYMENT RECEIPT
-          </p>
-          <ProgressStepper currentStep={2} />
-          
-          <div className="bg-blue-50/50 border border-blue-100 rounded-xl p-4 text-center">
+              {receiptSent ? 'CONFIRMATION SENT' : 'NEXT STEP: SEND PAYMENT RECEIPT'}
+            </p>
+            <ProgressStepper currentStep={receiptSent ? 3 : 2} />
             <span className="inline-flex h-2 w-2 rounded-full bg-blue-500 animate-pulse mr-2"></span>
             <span className="text-xs font-bold text-zinc-900 font-sans">
               📩 Please check your email inbox ({createdTicket.details.email}) right now! We have sent you information and your next steps.
@@ -185,19 +189,27 @@ export default function SuccessPage({ createdTicket, onBackToHome, onRegisterAno
               </div>
 
               {/* Redirection link of WhatsApp Prince Dike */}
-              <div className="space-y-3 print:hidden">
-                <a
-                  href={getWhatsAppRedirectionUrl()}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white px-5 py-3.5 text-xs sm:text-sm font-bold transition-all shadow-md mt-1 cursor-pointer"
-                >
-                  Confirm on WhatsApp & Send Receipt &rarr;
-                </a>
-                <p className="text-center text-[10px] text-zinc-550 leading-normal px-2">
-                  💡 This button opens chat with Prince Dike on WhatsApp instantly. Simply paste the message and send him your bank receipt!
-                </p>
-              </div>
+              {receiptSent ? (
+                <div className="rounded-3xl bg-emerald-50 border border-emerald-100 p-5 text-center">
+                  <p className="text-sm font-bold text-emerald-700">Congratulations!</p>
+                  <p className="mt-2 text-xs text-zinc-600 leading-relaxed">
+                    Your payment proof has been sent to WhatsApp. Stay ready for our confirmation message and your final onboarding details.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3 print:hidden">
+                  <button
+                    type="button"
+                    onClick={handleWhatsAppReceipt}
+                    className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white px-5 py-3.5 text-xs sm:text-sm font-bold transition-all shadow-md mt-1 cursor-pointer"
+                  >
+                    Confirm on WhatsApp & Send Receipt &rarr;
+                  </button>
+                  <p className="text-center text-[10px] text-zinc-550 leading-normal px-2">
+                    💡 This button opens chat with Prince Dike on WhatsApp instantly. Simply paste the message and send him your bank receipt!
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Ticket Footer Tear-out effect */}
