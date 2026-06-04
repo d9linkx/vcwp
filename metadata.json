@@ -1,0 +1,6 @@
+{
+  "name": "Introduction to Vibe Coding",
+  "description": "An interactive landing page introducing vibe coding to beginners of all ages in Nigeria. Features hands-on playground modules, virtual and physical schedules, community details, and an onboarding registration form.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
